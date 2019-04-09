@@ -14,7 +14,7 @@
     function setMap(){
 
         //map frame dimensions
-        var width = window.innerWidth * 0.75,
+        var width = window.innerWidth * 0.5,
             height = 460;
 
         //create new svg container for the map
@@ -134,7 +134,7 @@
             })
             .attr("d", path)
             .style("fill", function(d){
-                return colorScale(d.properties[expressed]);
+                return choropleth(d.properties, colorScale);
             });
     };
 
@@ -182,13 +182,13 @@
     function setChart(csvData, colorScale){
         
     //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.7,
-        chartHeight = 460,
+    var chartWidth = window.innerWidth * 0.4,
+        chartHeight = 400,
         leftPadding = 40,
         rightPadding = 20,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
+        chartInnerHeight = chartHeight - topBottomPadding *2 ,
         translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
 
         //create a second svg element to hold the bar chart
@@ -216,7 +216,7 @@
             .enter()
             .append("rect")
             .sort(function(a, b){
-            return a[expressed]-b[expressed]
+                return a[expressed]-b[expressed]
             })
             .attr("class", function(d){
                 return "bars " + d.County;
@@ -226,19 +226,20 @@
                 return i * (chartInnerWidth / csvData.length) + leftPadding;
             })
         .attr("height", function(d, i){
-            return 463 - yScale(parseFloat(d[expressed]));
+            return 600 - yScale(parseFloat(d[expressed]));
         })
         .attr("y", function(d, i){
-            return chartHeight - yScale(parseFloat(d[expressed])) + topBottomPadding;
+            return  yScale(parseFloat(d[expressed])) + topBottomPadding;
+        })
+        .style("fill", function(d){
+            return choropleth(d, colorScale);
         });
-        
         //create a text element for the chart title
         var chartTitle = chart.append("text")
-            .attr("x", 40)
+            .attr("x", 45)
             .attr("y", 40)
             .attr("class", "chartTitle")
-            .text("Number of Variable " + expressed[3] + " in each region");
-        console.log(expressed[3]);
+            .text("Population With Low Food Access in Wisconsin (2015)");
         
         //create vertical axis generator
         var yAxis = d3.axisLeft()
